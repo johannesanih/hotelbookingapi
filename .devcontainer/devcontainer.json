@@ -1,0 +1,69 @@
+{
+  "name": "Laravel API (PHP 8.3 + Composer)",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",  // or omit to use default universal
+
+  "features": {
+    "ghcr.io/devcontainers/features/php:1": {
+      "version": "8.3",
+      "extensions": [
+        "mbstring",
+        "xml",
+        "curl",
+        "zip",
+        "gd",
+        "intl",
+        "pdo_mysql",
+        "pdo_pgsql",   // if you ever switch to Postgres
+        "bcmath",
+        "exif",
+        "pcntl",
+        "pdo_sqlite",  // Added this
+        "sqlite3"  // Added this
+      ]
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"   // or "lts" / "18" — good for Vite/NPM in Laravel 11/12
+    },
+    "ghcr.io/devcontainers/features/composer:2": {}   // ensures latest Composer
+  },
+
+  // Optional: if you want Git + common CLI tools pre-installed
+  "features": {
+    // ... previous ones ...
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  // Ports to forward (Laravel serve usually on 8000)
+  "forwardPorts": [8000],
+
+  // Make port 8000 public by default (so you can click the globe icon)
+  "portsAttributes": {
+    "8000": {
+      "label": "Laravel App",
+      "onAutoForward": "openPreview"
+    }
+  },
+
+  // Run after container creation — install deps, setup .env, etc.
+  "postCreateCommand": "composer install --prefer-dist --no-progress --no-interaction && if [ ! -f .env ]; then cp .env.example .env; fi && php artisan key:generate",
+
+  // Optional: auto-start Laravel serve when you reopen (comment out if you prefer manual)
+  // "postAttachCommand": "php artisan serve --host=0.0.0.0 --port=8000",
+
+  // VS Code extensions to auto-install (very useful for Laravel)
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",     // PHP intellisense
+        "onecentlin.laravel5-snippets",            // Laravel snippets
+        "mikestead.dotenv",                        // .env highlighting
+        "EditorConfig.EditorConfig",               // .editorconfig support
+        "esbenp.prettier-vscode",                  // formatting (if using JS/CSS)
+        "dbaeumer.vscode-eslint"                   // if you have frontend linting
+      ]
+    }
+  },
+
+  // Optional: use a remoteUser other than vscode (default is fine)
+  "remoteUser": "vscode"
+}
