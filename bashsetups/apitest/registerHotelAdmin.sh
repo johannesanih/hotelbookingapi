@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 URL="https://automatic-lamp-45jgrvp795vhxv-8000.app.github.dev/api/v1/hotel-admin/register"
 
