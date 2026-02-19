@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Customer\CustomerAuthController;
 use App\Http\Controllers\Api\HotelAdmin\HotelAdminAuthController;
+use App\Http\Controllers\Api\HotelAdmin\HotelAdminHotelController;
+use App\Http\Controllers\Api\HotelAdmin\HotelAdminRoomTypeController;
+use App\Http\Controllers\Api\SuperAdmin\SuperAdminHotelController;
 
 // API Routes
 Route::prefix('v1')->group(function () {
@@ -26,10 +29,30 @@ Route::prefix('v1')->group(function () {
         Route::post('/hotel-admin/logout', [HotelAdminAuthController::class, 'logout']);
         Route::get('/hotel-admin/me', [HotelAdminAuthController::class, 'me']);
     });
-    
+
+    // Hotel Management Routes (Protected by Sanctum)
+    Route::middleware('auth:sanctum')->group(function () {
+        // Hotel Management Routes
+        Route::post('/hotel/create', [HotelAdminHotelController::class, 'create']);
+        Route::put('/hotel/update/{id}', [HotelAdminHotelController::class, 'update']);
+        Route::delete('/hotel/delete/{id}', [HotelAdminHotelController::class, 'delete']);
+
+        // Room Type Management Routes
+        Route::post('/roomtype/create', [HotelAdminRoomTypeController::class, 'create']);
+        Route::put('/roomtype/update/{id}', [HotelAdminRoomTypeController::class, 'update']);
+        Route::delete('/roomtype/delete/{id}', [HotelAdminRoomTypeController::class, 'delete']);
+    });
+
+    // Super Admin Routes (Protected by Sanctum and SuperAdmin Middleware)
+    Route::middleware(['auth:sanctum', 'superadmin'])->group(function () {
+        // Super Admin Hotel Approval Routes
+        Route::put('/hotel/approve/{id}', [SuperAdminHotelController::class, 'approve']);
+        Route::put('/hotel/reject/{id}', [SuperAdminHotelController::class, 'reject']);
+    });
+
 });
 
-//----------
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

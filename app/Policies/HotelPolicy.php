@@ -41,5 +41,10 @@ class HotelPolicy
     {
         return $user->role === 'super_admin';
     }
+
+    public function reject(User $user)
+    {
+        return $user->role === 'super_admin';
+    }
 }
 
