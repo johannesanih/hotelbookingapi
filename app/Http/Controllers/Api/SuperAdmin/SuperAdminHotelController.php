@@ -14,7 +14,8 @@ class SuperAdminHotelController extends Controller
         $this->authorize('approve', Hotel::class);
 
         $hotel = Hotel::findOrFail($id);
-        $hotel->update(['status' => 'approved']);
+        $hotel->status = 'approved';
+        $hotel->save();
         return response()->json(['message' => 'Hotel approved successfully']);
     }
 
@@ -23,7 +24,8 @@ class SuperAdminHotelController extends Controller
         $this->authorize('reject', Hotel::class);
 
         $hotel = Hotel::findOrFail($id);
-        $hotel->update(['status' => 'rejected']);
+        $hotel->status = 'rejected';
+        $hotel->save();
         return response()->json(['message' => 'Hotel rejected successfully']);
     }
 }

@@ -4,11 +4,21 @@ namespace App\Policies;
 
 use App\Models\Booking;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class BookingPolicy
 {
-    public function view(User $user, Booking $booking)
+    /**
+     * Only customers can create bookings.
+     */
+    public function create(User $user): bool
+    {
+        return $user->role === 'customer';
+    }
+
+    /**
+     * super_admin sees all, hotel_admin sees their hotel's bookings, customer sees their own.
+     */
+    public function view(User $user, Booking $booking): bool
     {
         if ($user->role === 'super_admin') return true;
 
@@ -19,10 +29,23 @@ class BookingPolicy
         return $booking->user_id === $user->id; // customer
     }
 
-    public function updateStatus(User $user, Booking $booking)
+    /**
+     * Only hotel_admin of the booking's hotel can update booking status.
+     */
+    public function updateStatus(User $user, Booking $booking): bool
     {
         return $user->role === 'hotel_admin'
             && $booking->hotel->user_id === $user->id;
     }
-}
 
+    /**
+     * super_admin can cancel anything, customer can only cancel their own booking.
+     */
+    public function cancel(User $user, Booking $booking): bool
+    {
+        if ($user->role === 'super_admin') return true;
+
+        return $user->role === 'customer'
+            && $booking->user_id === $user->id;
+    }
+}

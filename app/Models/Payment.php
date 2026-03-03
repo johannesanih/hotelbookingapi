@@ -10,6 +10,20 @@ use App\Models\Booking;
 
 class Payment extends Model
 {
+
+    protected $fillable = [
+        'user_id',
+        'hotel_id',
+        'booking_id',
+        'amount',
+        'reference',
+    ];
+
+     protected $casts = [
+        'payment_date' => 'datetime',
+        'amount' => 'decimal:2',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

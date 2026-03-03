@@ -11,6 +11,14 @@ use App\Models\Payment;
 
 class Booking extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'hotel_id',
+        'checkin',
+        'checkout',
+        'amount',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -30,4 +38,5 @@ class Booking extends Model
     {
         return $this->hasOne(Payment::class);
     }
+
 }

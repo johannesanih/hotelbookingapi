@@ -10,10 +10,11 @@ use Illuminate\Auth\Access\Response;
 
 class PricePolicy
 {
-    public function create(User $user, RoomType $roomType)
+    public function create(User $user, Hotel $hotel)
     {
         return $user->role === 'hotel_admin'
-            && $roomType->hotel->user_id === $user->id;
+            && $hotel->user_id === $user->id
+            && $hotel->status === 'approved';
     }
 
     public function update(User $user, Price $price)

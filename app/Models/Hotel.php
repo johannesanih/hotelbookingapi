@@ -16,6 +16,13 @@ use App\Models\Rating;
 
 class Hotel extends Model
 {
+    protected $fillable = [
+        'name',
+        'address',
+        'description',
+        'user_id',
+    ];
+
     public function admin()
     {
         return $this->belongsTo(User::class, 'user_id');

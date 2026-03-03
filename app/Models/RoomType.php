@@ -11,6 +11,11 @@ use App\Models\ServiceRoom;
 
 class RoomType extends Model
 {
+    protected $fillable = [
+        'hotel_id',
+        'name',
+        'quantity',
+    ];
     public function hotel()
     {
         return $this->belongsTo(Hotel::class);

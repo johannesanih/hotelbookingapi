@@ -10,6 +10,14 @@ use App\Models\RoomType;
 
 class BookingRoom extends Model
 {
+    protected $fillable = [
+        'booking_id',
+        'hotel_id',
+        'room_type_id',
+        'quantity',
+        'amount',
+    ];
+
     public function booking()
     {
         return $this->belongsTo(Booking::class);

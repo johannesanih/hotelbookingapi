@@ -12,28 +12,20 @@ class HotelAdminRoomTypeController extends Controller
 {
     public function create(Request $request)
     {
-        $this->authorize('create', RoomType::class);
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'hotel_id' => 'required|exists:hotels,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $hotel = Hotel::where('id', $validated['hotel_id'])
-            ->where('user_id', $request->user()->id)
-            ->where('status', 'approved')
-            ->firstOrFail();
+        $hotel = Hotel::findOrFail($validated['hotel_id']);
 
-        if(! $hotel) {
-            return response()->json([
-                'message' => 'Hotel not found or not approved',
-            ], 404);
-        }
+        // 🔥 Authorize using the hotel model
+        $this->authorize('create', $hotel);
 
         $roomType = RoomType::create([
             'name' => $validated['name'],
-            'hotel_id' => $validated['hotel_id'],
+            'hotel_id' => $hotel->id,
             'quantity' => $validated['quantity'],
         ]);
 
