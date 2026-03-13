@@ -10,17 +10,17 @@ use App\Models\Booking;
 
 class Payment extends Model
 {
-
     protected $fillable = [
         'user_id',
         'hotel_id',
         'booking_id',
         'amount',
         'reference',
+        'status',
+        'gatewayresponse',
     ];
 
-     protected $casts = [
-        'payment_date' => 'datetime',
+    protected $casts = [
         'amount' => 'decimal:2',
     ];
 

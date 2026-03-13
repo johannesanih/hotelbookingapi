@@ -4,63 +4,30 @@ namespace App\Policies;
 
 use App\Models\Payment;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PaymentPolicy
 {
     /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can view the model.
+     * super_admin sees all, hotel_admin sees payments for their hotel,
+     * customer sees only their own payments.
      */
     public function view(User $user, Payment $payment): bool
     {
-        return false;
+        if ($user->role === 'super_admin') return true;
+
+        if ($user->role === 'hotel_admin') {
+            return $payment->hotel->user_id === $user->id;
+        }
+
+        return $payment->user_id === $user->id; // customer
     }
 
     /**
-     * Determine whether the user can create models.
+     * Only customers can initialize a payment (it's tied to their booking).
      */
-    public function create(User $user): bool
+    public function initialize(User $user, Payment $payment): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Payment $payment): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Payment $payment): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Payment $payment): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Payment $payment): bool
-    {
-        return false;
+        return $user->role === 'customer'
+            && $payment->user_id === $user->id;
     }
 }

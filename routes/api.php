@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Customer\CustomerAuthController;
 use App\Http\Controllers\Api\Customer\CustomerHotelController;
 use App\Http\Controllers\Api\Customer\CustomerBookingController;
+use App\Http\Controllers\Api\Customer\CustomerPaymentController;
 
 use App\Http\Controllers\Api\HotelAdmin\HotelAdminAuthController;
 use App\Http\Controllers\Api\HotelAdmin\HotelAdminHotelController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\Api\HotelAdmin\HotelAdminRoomTypeController;
 use App\Http\Controllers\Api\HotelAdmin\HotelAdminPriceController;
 
 use App\Http\Controllers\Api\SuperAdmin\SuperAdminHotelController;
+
+use App\Http\Controllers\Api\PaystackWebhookController;
 
 // API Routes
 Route::prefix('v1')->group(function () {
@@ -73,6 +76,19 @@ Route::prefix('v1')->group(function () {
         Route::put('/hotel/approve/{id}', [SuperAdminHotelController::class, 'approve']);
         Route::put('/hotel/reject/{id}', [SuperAdminHotelController::class, 'reject']);
     });
+
+
+    // Public — Paystack redirects here after payment (no token in browser redirect)
+    Route::get('/payment/callback', [CustomerPaymentController::class, 'callback']);
+
+    // Payment routes (protected)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/payment/initialize', [CustomerPaymentController::class, 'initialize']);
+        Route::post('/payment/verify', [CustomerPaymentController::class, 'verify']);
+    });
+
+    // Webhook — NO auth:sanctum, NO CSRF
+    Route::post('/webhook/paystack', [PaystackWebhookController::class, 'handle']);
 
 });
 

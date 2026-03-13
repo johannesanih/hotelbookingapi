@@ -17,6 +17,7 @@ class Booking extends Model
         'checkin',
         'checkout',
         'amount',
+        'status',
     ];
 
     public function user()
@@ -38,5 +39,4 @@ class Booking extends Model
     {
         return $this->hasOne(Payment::class);
     }
-
 }
